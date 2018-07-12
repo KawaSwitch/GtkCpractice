@@ -1,5 +1,10 @@
 #include "win.h"
 
+void water_cutter_callback()
+{
+
+}
+
 // タイマーの値からランダム色を生成
 void GetRandomColorByTimer(GdkColor* color)
 {
