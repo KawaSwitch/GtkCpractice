@@ -37,3 +37,6 @@ extern int shape; // 0=円形, 1=三角, 2=四角
 extern void DrawDropAndCircles(int x,int y,int lim,GdkGC* gc);
 
 // Tohata
+extern void GetBGColor(GdkColor* color);
+extern void GetBGColorGC(GdkGC **gc);
+extern void ChangeBGColor(GdkGC **gc);
