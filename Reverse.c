@@ -1,6 +1,7 @@
 
 #include "win.h"
 
+int reverse = 0;
 // 落ちる雫と波紋を描画する
 // start:描画開始時間
 void DrawDropAndCircles(int x,int y,int start,GdkGC* gc) 
