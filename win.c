@@ -13,6 +13,7 @@ const int MAX_RGB = 65535; // RGBの最大値
 int main(int argc, char **argv)
 {
   GtkWidget *win, *table, *button1, *exit, *value;
+  GtkWidget *wc_label, *wc_button; // 水切りボタン
   int interval = 40; // タイマー処理間隔(ms)
 
   gtk_init(&argc, &argv);
@@ -33,6 +34,12 @@ int main(int argc, char **argv)
   button1 = gtk_button_new();
   gtk_container_add(GTK_CONTAINER(button1), exit);
 
+  // 水切りボタン設定
+  wc_label = gtk_label_new("水切り");
+  wc_button = gtk_button_new();
+  gtk_container_add(GTK_CONTAINER(wc_button), wc_label);
+
+  // スピンボタン設定
   value = gtk_spin_button_new_with_range(1,20,1);
   gtk_spin_button_set_value(GTK_SPIN_BUTTON(value),10);
 
@@ -45,11 +52,12 @@ int main(int argc, char **argv)
   gtk_table_attach(GTK_TABLE(table),value,74,75,0,1,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),l2,0,100,30,60,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),button1,74,75,99,100,0,0,0,0);
+  gtk_table_attach(GTK_TABLE(table),wc_button, 45, 46, 99, 100, 0,0,0,0);
 
   //Signals
   g_signal_connect(button1,"clicked",G_CALLBACK(gtk_main_quit),NULL);
   g_signal_connect(value,"value-changed",G_CALLBACK(value_update_callback),NULL);
-
+  g_signal_connect(wc_button,"clicked",G_CALLBACK(water_cutter_callback),NULL);
   
   //Show
   gtk_widget_show(win);
@@ -60,6 +68,8 @@ int main(int argc, char **argv)
   gtk_widget_show(button1);
   gtk_widget_show(exit);
   gtk_widget_show(value);
+  gtk_widget_show(wc_label);
+  gtk_widget_show(wc_button);
 
   g_timeout_add(interval,timeout_callback,NULL);
 
