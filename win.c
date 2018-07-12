@@ -22,6 +22,7 @@ int main(int argc, char **argv)
   /* printf("gtk_main:%p\n", gtk_main); */
 
   GtkWidget *win, *table, *button1, *exit, *value;
+  GtkWidget *ch, *button5;
   int interval = 40; // タイマー処理間隔(ms)
 
   /* printf("interval変数:%p\n", &interval); */
@@ -63,7 +64,6 @@ int main(int argc, char **argv)
   g_signal_connect(button1,"clicked",G_CALLBACK(gtk_main_quit),NULL);
   g_signal_connect(value,"value-changed",G_CALLBACK(value_update_callback),NULL);
 
-  
   //Show
   gtk_widget_show(win);
   gtk_widget_show(table);
@@ -71,6 +71,7 @@ int main(int argc, char **argv)
   gtk_widget_set_size_request(l2,wnd_width,wnd_height);
   gtk_widget_show(l2);
   gtk_widget_show(button1);
+  gtk_widget_show(button5);
   gtk_widget_show(exit);
   gtk_widget_show(value);
 

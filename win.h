@@ -33,7 +33,8 @@ extern int isMizukiri; // 水切りモードであるか
 extern void GetMizukiriCoord(int* x, int* y);
 
 // Kondo
-extern int shape; // 0=円形, 1=三角, 2=四角
+extern int reverse; // 0=円形, 1=三角, 2=四角
+extern void DrawDropAndCircles(int x,int y,int lim,GdkGC* gc);
 extern void DrawDropAndCircles(int x,int y,int lim,GdkGC* gc);
 
 // Tohata
