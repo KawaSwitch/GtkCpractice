@@ -9,6 +9,7 @@ GtkWidget *l1; // スピンウィジェット
 GtkWidget *l2; // 描画ウィジェット
 const int draw_span = DROP_SPAN + WAVE_SPAN; // 1つの雫/波 描画時間(ms)
 const int MAX_RGB = 65535; // RGBの最大値
+int reverse=0;
 
 int main(int argc, char **argv)
 {
@@ -53,6 +54,15 @@ int main(int argc, char **argv)
   g_signal_connect(button1,"clicked",G_CALLBACK(gtk_main_quit),NULL);
   g_signal_connect(value,"value-changed",G_CALLBACK(value_update_callback),NULL);
 
+  //追加
+  ch = gtk_label_new("Reverse");
+  button5 = gtk_button_new();
+  gtk_container_add(GTK_CONTAINER(button5), ch);
+  gtk_table_attach(GTK_TABLE(table),button5,45,46,99,100,0,0,0,0);
+  g_signal_connect(button5,"clicked",G_CALLBACK(change_ripple_shape),NULL);
+  
+
+
   //Show
   gtk_widget_show(win);
   gtk_widget_show(table);
@@ -60,8 +70,10 @@ int main(int argc, char **argv)
   gtk_widget_set_size_request(l2,wnd_width,wnd_height);
   gtk_widget_show(l2);
   gtk_widget_show(button1);
+ gtk_widget_show(ch);
   gtk_widget_show(button5);
   gtk_widget_show(exit);
+ 
   gtk_widget_show(value);
   
   g_timeout_add(interval,timeout_callback,NULL);
@@ -74,7 +86,7 @@ int main(int argc, char **argv)
 gboolean timeout_callback()
 {
   int i;
-  static int start_time[58]; // 各波(雫&波)の描画開始時間
+  static int start_time[58][2]; // 各波(雫&波)の描画開始時間
   static int cur_start_idx=0, cur_end_idx=0; // 現在の描画インデックス(開始/終了用)
   static int centerX[58], centerY[58]; // 中心座標群
 
@@ -93,9 +105,10 @@ gboolean timeout_callback()
   		     0, 0, wnd_width, wnd_height);
  
   // 新しい波を追加する
-  if(timer%val==0 && start_time[cur_start_idx]==0)
+  if(timer%val==0 && start_time[cur_start_idx][0]==0)
     {
-      start_time[cur_start_idx] = timer;
+      start_time[cur_start_idx][0] = timer;
+      start_time[cur_start_idx][1] = reverse;
       if(++cur_start_idx == draw_span) 
 	cur_start_idx = 0;
     }
@@ -106,12 +119,17 @@ gboolean timeout_callback()
 
   // 波を描画
   for(i = 0; i < draw_span; i++)
-    DrawDropAndCircles(centerX[i],centerY[i],start_time[i],gc);
+    {
+    if(start_time[cur_start_idx][1]%2==0)
+      {DrawDropAndCircles(centerX[i],centerY[i],start_time[i][0],gc);}
+    else
+      {DrawReverseCircles(centerX[i],centerY[i],start_time[i][0],gc);}
+    }
       
   // 描画開始から時間の経った波をクリア
-  if(start_time[cur_end_idx]+draw_span == timer)
+  if(start_time[cur_end_idx][0]+draw_span == timer)
     { 
-      start_time[cur_end_idx] = 0;
+      start_time[cur_end_idx][0] = 0;
       if(++cur_end_idx == draw_span)
 	cur_end_idx = 0;
     }
@@ -147,5 +165,10 @@ void value_update_callback(GtkSpinButton *s)
   // ラベルの値も更新
   sprintf(buffer,"Value = %d", val); 
   gtk_label_set_text(GTK_LABEL(l1),buffer); 
+}
+
+void change_ripple_shape()
+{
+  reverse++;
 }
 

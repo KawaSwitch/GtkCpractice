@@ -10,7 +10,6 @@
 extern gboolean timeout_callback();
 extern gboolean draw_expose_callback(GtkWidget *w);
 extern void value_update_callback(GtkSpinButton *s);
-extern void water_cutter_callback();
 extern void change_ripple_shape();
 
 // 波の色替え関数
@@ -35,6 +34,6 @@ extern void GetMizukiriCoord(int* x, int* y);
 // Kondo
 extern int reverse; // 0=円形, 1=三角, 2=四角
 extern void DrawDropAndCircles(int x,int y,int lim,GdkGC* gc);
-extern void DrawDropAndCircles(int x,int y,int lim,GdkGC* gc);
+extern void DrawReverseCircles(int x,int y,int lim,GdkGC* gc);
 
 // Tohata
