@@ -1,14 +1,10 @@
-//チーム８
+// チーム８
 #include "win.h"
-/* #include <gtk/gtk.h> */
-/* #include <math.h> */
-/* #include <stdlib.h> */
 
 int wnd_height = 200; // ウィンドウの高さ
 int wnd_width = 400; // ウィンドウの幅
 int val=10; // スピンウィジェットの値
 int timer=0; // 描画更新回数
-int dummyA=12, dummyB, dummyC, dummyD;
 GtkWidget *l1; // スピンウィジェット
 GtkWidget *l2; // 描画ウィジェット
 const int draw_span = DROP_SPAN + WAVE_SPAN; // 1つの雫/波 描画時間(ms)
@@ -16,23 +12,14 @@ const int MAX_RGB = 65535; // RGBの最大値
 
 int main(int argc, char **argv)
 {
-  /* printf("%p %p %p\n", &wnd_width, &wnd_height, &val); */
-  /* printf("main:%p\n", main); */
-  /* printf("timeout_callback:%p\n", timeout_callback); */
-  /* printf("gtk_main:%p\n", gtk_main); */
-
   GtkWidget *win, *table, *button1, *exit, *value;
   int interval = 40; // タイマー処理間隔(ms)
-
-  /* printf("interval変数:%p\n", &interval); */
-  /* printf("win変数:%p\n", &win); */
 
   gtk_init(&argc, &argv);
   srand(time(NULL));
 
   /* make a window */
   win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  //printf("win変数がさしてる番地(初期化後):%p\n", win);
   g_signal_connect(win,"destroy",G_CALLBACK(gtk_main_quit),NULL);
 
   l1 = gtk_label_new("Label1");
