@@ -1,6 +1,7 @@
 
 #include "win.h"
 
+int reverse = 0;
 // 落ちる雫と波紋を描画する
 // start:描画開始時間
 void DrawDropAndCircles(int x,int y,int start,GdkGC* gc) 
@@ -79,7 +80,7 @@ void DrawReverseCircles(int x,int y,int start,GdkGC* gc)
 	      // 雫が落ちた後の波紋を描画
 
 	      // 第1波
-	      r1 = 40 - pow((timer-start-DROP_SPAN)-,2)/(double)40;
+	      r1 = 40 - pow((timer-start-DROP_SPAN),2)/(double)40;
 	      if(j<=x+r1-1&&j>=x-r1&&timer<48+start)
 		{
 		  pnt1_y = pow(r1,2)-pow(j-x,2);
