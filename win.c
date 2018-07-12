@@ -49,7 +49,7 @@ int main(int argc, char **argv)
   //GTK_EXPAND|GTK_SHRINK
   gtk_table_attach(GTK_TABLE(table),wl1,24,25,0,1,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),wl2,74,75,0,1,0,0,0,0);
-  gtk_table_attach(GTK_TABLE(table),value,74,75,0,1,0,0,0,0);
+  gtk_table_attach(GTK_TABLE(table),value,15,16,99,100,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),l2,0,100,30,60,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),button1,74,75,99,100,0,0,0,0);
   
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
   button5 = gtk_button_new();
   gtk_container_add(GTK_CONTAINER(button5), ch);
   gtk_table_attach(GTK_TABLE(table),button5,45,46,99,100,0,0,0,0);
-  g_signal_connect(button5,"clicked",G_CALLBACK(change_ripple_shape),NULL);
+  g_signal_connect(button5,"clicked",G_CALLBACK(reverse_clicked_callback),NULL);
   
 
 
@@ -77,6 +77,7 @@ int main(int argc, char **argv)
   gtk_widget_show(ch);
   gtk_widget_show(button5);
   gtk_widget_show(exit);
+  gtk_widget_show(value);
   
   g_timeout_add(interval,timeout_callback,NULL);
 
@@ -159,15 +160,11 @@ gboolean draw_expose_callback(GtkWidget *w)
 // スピンボタン更新コールバック
 void value_update_callback(GtkSpinButton *s)
 {
-  //char buffer[256];
-  val = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s)); 
-
-  /* // ラベルの値も更新 */
-  /* sprintf(buffer,"Value = %d", val);  */
-  /* gtk_label_set_text(GTK_LABEL(l1),buffer);  */
+  val = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s));
 }
 
-void change_ripple_shape()
+// Reverseボタンクリックコールバック
+void reverse_clicked_callback()
 {
   reverse++;
 }
