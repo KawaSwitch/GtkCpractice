@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define DROP_SPAN 8 // 雫の落ちる時間(ms)
-#define WAVE_SPAN 50 // 波が広がる時間(ms)
+#define WAVE_SPAN 40 // 波が広がる時間(ms)
 
 // コールバック関数
 extern gboolean timeout_callback();

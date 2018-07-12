@@ -9,7 +9,7 @@ GtkWidget *wl1, *wl2; // 天気ラベルウィジェット
 GtkWidget *l2; // 描画ウィジェット
 const int draw_span = DROP_SPAN + WAVE_SPAN; // 1つの雫/波 描画時間(ms)
 const int MAX_RGB = 65535; // RGBの最大値
-
+int reverse=0;
 
 int main(int argc, char **argv)
 {
@@ -88,9 +88,9 @@ int main(int argc, char **argv)
 gboolean timeout_callback()
 {
   int i;
-  static int start_time[58][2]; // 各波(雫&波)の描画開始時間
+  static int start_time[48][2]; // 各波(雫&波)の描画開始時間
   static int cur_start_idx=0, cur_end_idx=0; // 現在の描画インデックス(開始/終了用)
-  static int centerX[58], centerY[58]; // 中心座標群
+  static int centerX[48], centerY[48]; // 中心座標群
 
   // 新しい雫の着地点(波の中心)座標を設定する
   if(timer%val == 0)
@@ -122,10 +122,10 @@ gboolean timeout_callback()
   // 波を描画
   for(i = 0; i < draw_span; i++)
     {
-    if(start_time[cur_start_idx][1]%2==0)
-      {DrawDropAndCircles(centerX[i],centerY[i],start_time[i][0],gc);}
-    else
-      {DrawReverseCircles(centerX[i],centerY[i],start_time[i][0],gc);}
+      if(start_time[i][1]%2==0)
+      	{DrawDropAndCircles(centerX[i],centerY[i],start_time[i][0],gc);}
+      if(start_time[i][1]%2==1)
+      	{DrawReverseCircles(centerX[i],centerY[i],start_time[i][0],gc);}
     }
       
   // 描画開始から時間の経った波をクリア
