@@ -1,4 +1,4 @@
-default: win
+default: kawakami kondo tohata win
 
 clean:
 	rm -f *~ *.o win
