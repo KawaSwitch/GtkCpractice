@@ -10,7 +10,7 @@
 extern gboolean timeout_callback();
 extern gboolean draw_expose_callback(GtkWidget *w);
 extern void value_update_callback(GtkSpinButton *s);
-extern void change_ripple_shape();
+extern void reverse_clicked_callback();
 
 extern int wnd_height; // ウィンドウの高さ
 extern int wnd_width; // ウィンドウの幅
