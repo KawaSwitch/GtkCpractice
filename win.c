@@ -5,7 +5,7 @@ int wnd_height = 200; // ウィンドウの高さ
 int wnd_width = 400; // ウィンドウの幅
 int val=10; // スピンウィジェットの値
 int timer=0; // 描画更新回数
-GtkWidget *l1; // スピンウィジェット
+GtkWidget *wl1, *wl2; // 天気ラベルウィジェット
 GtkWidget *l2; // 描画ウィジェット
 const int draw_span = DROP_SPAN + WAVE_SPAN; // 1つの雫/波 描画時間(ms)
 const int MAX_RGB = 65535; // RGBの最大値
@@ -24,7 +24,9 @@ int main(int argc, char **argv)
   win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   g_signal_connect(win,"destroy",G_CALLBACK(gtk_main_quit),NULL);
 
-  l1 = gtk_label_new("Label1");
+  // 天気ウィジェット設定
+  wl1 = gtk_label_new("Label1");
+  wl2 = gtk_label_new("Label2");
 
   /* make a draw area */
   l2 = gtk_drawing_area_new();
@@ -44,7 +46,8 @@ int main(int argc, char **argv)
   gtk_container_add(GTK_CONTAINER(win),table);
 
   //GTK_EXPAND|GTK_SHRINK
-  gtk_table_attach(GTK_TABLE(table),l1,24,25,0,1,0,0,0,0);
+  gtk_table_attach(GTK_TABLE(table),wl1,24,25,0,1,0,0,0,0);
+  gtk_table_attach(GTK_TABLE(table),wl2,74,75,0,1,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),value,74,75,0,1,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),l2,0,100,30,60,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),button1,74,75,99,100,0,0,0,0);
@@ -56,12 +59,13 @@ int main(int argc, char **argv)
   //Show
   gtk_widget_show(win);
   gtk_widget_show(table);
-  gtk_widget_show(l1);
+  gtk_widget_show(wl1);
+  gtk_widget_show(wl2);
   gtk_widget_set_size_request(l2,wnd_width,wnd_height);
   gtk_widget_show(l2);
   gtk_widget_show(button1);
   gtk_widget_show(exit);
-  gtk_widget_show(value);
+  //gtk_widget_show(value);
   
   g_timeout_add(interval,timeout_callback,NULL);
 
@@ -122,17 +126,15 @@ gboolean timeout_callback()
 // 露出コールバック
 gboolean draw_expose_callback(GtkWidget *w)
 {
-  char buffer[256];
-
   // 描画エリアを背景色でクリア(背景色:黒)
   gdk_draw_rectangle(l2->window, 
 		     l2->style->fg_gc[GTK_WIDGET_STATE(l2)],
 		     TRUE,
 		     0, 0, wnd_width, wnd_height);
 
-  // ラベル設定
-  sprintf(buffer,"Value = %d", val);
-  gtk_label_set_text(GTK_LABEL(l1),buffer);
+  // 天気ラベル設定 TODO:実際にウェブから取得
+  gtk_label_set_text(GTK_LABEL(wl1), "長崎市の明日の天気");
+  gtk_label_set_text(GTK_LABEL(wl2),"晴れ");
 
   return TRUE;
 }
@@ -140,11 +142,11 @@ gboolean draw_expose_callback(GtkWidget *w)
 // スピンボタン更新コールバック
 void value_update_callback(GtkSpinButton *s)
 {
-  char buffer[256];
+  //char buffer[256];
   val = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s)); 
 
-  // ラベルの値も更新
-  sprintf(buffer,"Value = %d", val); 
-  gtk_label_set_text(GTK_LABEL(l1),buffer); 
+  /* // ラベルの値も更新 */
+  /* sprintf(buffer,"Value = %d", val);  */
+  /* gtk_label_set_text(GTK_LABEL(l1),buffer);  */
 }
 

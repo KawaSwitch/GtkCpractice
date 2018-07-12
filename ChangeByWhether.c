@@ -1,8 +1,19 @@
 #include "win.h"
 
-void water_cutter_callback()
+// ある地域の明日の天気を取得する
+char* GetTomorrowWhether(char* location)
 {
+  // ...
 
+  return NULL; 
+}
+
+// 次の雫が落ちるまでの時間間隔を取得
+int ConvertWhetherToWaitSpan(char* whether)
+{
+  // ...
+
+  return 0;
 }
 
 // タイマーの値からランダム色を生成
