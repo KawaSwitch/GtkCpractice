@@ -13,7 +13,7 @@ const int MAX_RGB = 65535; // RGBの最大値
 int main(int argc, char **argv)
 {
   GtkWidget *win, *table, *button1, *exit, *value;
-  GtkWidget *ch, *button5;
+  //GtkWidget *ch, *button5; // NOTE:後で更新お願いします
 
   int interval = 40; // タイマー処理間隔(ms)
 
@@ -60,7 +60,6 @@ int main(int argc, char **argv)
   gtk_widget_set_size_request(l2,wnd_width,wnd_height);
   gtk_widget_show(l2);
   gtk_widget_show(button1);
-  gtk_widget_show(button5);
   gtk_widget_show(exit);
   gtk_widget_show(value);
   
