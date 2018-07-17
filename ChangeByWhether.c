@@ -11,7 +11,7 @@ static const int READ = 0;
 static const int WRITE = 1;
 
 // ある地域の明日の天気を取得する
-void GetTomorrowWhether(char* location, char **wheather)
+void GetTomorrowWeather(char* location, char **weather)
 {
   int pipefd[2];
   int p_id;
@@ -26,7 +26,7 @@ void GetTomorrowWhether(char* location, char **wheather)
     }
   if ((p_id = fork()) < 0) // 子プロセスの生成
     {
-      perror("GetTomorrwowWhether内");
+      perror("GetTomorrwowWeather内");
 
       //パイプを閉じて終了
       close(pipefd[READ]);
@@ -57,7 +57,7 @@ void GetTomorrowWhether(char* location, char **wheather)
       close(pipefd[WRITE]); // 親は書き込まないので閉じる
 
       read(pipefd[READ], buff, BUF_SIZE);
-      strcpy(*wheather,buff);    
+      strcpy(*weather,buff);    
 
       close(pipefd[READ]);
 
@@ -68,11 +68,16 @@ void GetTomorrowWhether(char* location, char **wheather)
 }
 
 // 次の雫が落ちるまでの時間間隔を取得
-int ConvertWhetherToWaitSpan(char* wheather)
+int ConvertWeatherToWaitSpan(char* weather)
 {
-  // ...
-
-  return 0;
+  if (!strcmp(weather, "晴れ"))
+    return 30;
+  else if (!strcmp(weather, "雨"))
+    return 2;
+  else if (!strcmp(weather, "曇り"))
+    return 20;
+  else
+    return 1; // とりあえず
 }
 
 // タイマーの値からランダム色を生成

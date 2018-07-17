@@ -20,10 +20,10 @@ extern GtkWidget *l2; // 描画ウィジェット
 extern const int draw_span; // 1つの雫/波 描画時間(ms)
 extern const int MAX_RGB; // RGBの最大値
 
-// Kawakami ChangeByWhether.c
+// Kawakami ChangeByWeather.c
 // 天気
-extern void GetTomorrowWhether(char* location, char **wheather);
-extern int ConvertWhetherToWaitSpan(char* wheather);
+extern void GetTomorrowWeather(char* location, char **wheather);
+extern int ConvertWeatherToWaitSpan(char* wheather);
 // 波の色替え関数
 extern void GetRandomColorGC(GdkGC **gc);
 extern int CalcNextParam(int color_ratio, int ini_param);

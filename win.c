@@ -51,7 +51,7 @@ int main(int argc, char **argv)
   //GTK_EXPAND|GTK_SHRINK
   gtk_table_attach(GTK_TABLE(table),wl1,24,25,0,1,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),wl2,74,75,0,1,0,0,0,0);
-  gtk_table_attach(GTK_TABLE(table),value,15,16,99,100,0,0,0,0);
+  //gtk_table_attach(GTK_TABLE(table),value,15,16,99,100,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),l2,0,100,30,60,0,0,0,0);
   gtk_table_attach(GTK_TABLE(table),button1,74,75,99,100,0,0,0,0);
   
@@ -109,7 +109,7 @@ gboolean timeout_callback()
     {
       int buf_size_max = 1024;
       weather = (char *)malloc(sizeof(char) * buf_size_max);
-      GetTomorrowWhether(buf, &weather);
+      GetTomorrowWeather(buf, &weather);
 
       // 不要な最後の改行を削除
       cbuf = strchr(weather, '\n');
@@ -117,7 +117,10 @@ gboolean timeout_callback()
       
       // 天気ラベル設定
       gtk_label_set_text(GTK_LABEL(wl1), "長崎市の明日の天気");
-      gtk_label_set_text(GTK_LABEL(wl2), weather); 
+      gtk_label_set_text(GTK_LABEL(wl2), weather);
+
+      // 天気から時間間隔を決定
+      val = ConvertWeatherToWaitSpan(weather);
 
       /* switch(atoi(weather)) */
       /* 	{ */
@@ -204,7 +207,7 @@ gboolean draw_expose_callback(GtkWidget *w)
 // スピンボタン更新コールバック
 void value_update_callback(GtkSpinButton *s)
 {
-  val = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s));
+  //val = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(s));
 }
 
 // Reverseボタンクリックコールバック
