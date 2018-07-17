@@ -1,7 +1,6 @@
 
 #include "win.h"
 
-int reverse = 0;
 // 落ちる雫と波紋を描画する
 // start:描画開始時間
 void DrawDropAndCircles(int x,int y,int start,GdkGC* gc) 
@@ -13,7 +12,7 @@ void DrawDropAndCircles(int x,int y,int start,GdkGC* gc)
   
   for(j=0; j <= wnd_width; j++)
     {
-      if(timer < draw_span+start && start>0 && reverse%2==0)
+      if(timer < draw_span+start && start>0)
 	{
 	  if(timer < start+DROP_SPAN)
 	    {
@@ -54,13 +53,12 @@ void DrawDropAndCircles(int x,int y,int start,GdkGC* gc)
     }
 }
 
-void DrawReverseCircles(int x,int y,int start,GdkGC* gc) 
+void DrawReverseCircles(int x,int y,int start,GdkGC* gc)
 {
   int j;
   int droper;
   int r1, r2; // 波紋の半径
   double pnt1_y, pnt2_y; // 直線描画用y座標
-  static const int shift_span = 12; // 第2波目開始のずらす時間(ms)
   
   for(j=0; j <= wnd_width; j++)
     {
@@ -76,7 +74,6 @@ void DrawReverseCircles(int x,int y,int start,GdkGC* gc)
 	  	       23040);
 	}
       // 雫が落ちた後の波紋を描画
-
       // 第1波
       r1 = 40 - pow((timer-start),2)/(double)40;
       if(j<=x+r1-1&&j>=x-r1&&timer<40+start)
@@ -86,7 +83,6 @@ void DrawReverseCircles(int x,int y,int start,GdkGC* gc)
 	  gdk_draw_line(l2->window, gc,j,y-sqrt(pnt1_y),j+1,y-sqrt(pnt2_y));
 	  gdk_draw_line(l2->window, gc,j,y+sqrt(pnt1_y),j+1,y+sqrt(pnt2_y));
 	}
-
       // 第2波(第1波より遅くずらす)
       r2 = 40 - pow((timer-start)+12,2)/(double)40;
       if(j<=x+r2-1 && j>=x-r2 && timer-start<28)
@@ -96,7 +92,5 @@ void DrawReverseCircles(int x,int y,int start,GdkGC* gc)
 	  gdk_draw_line(l2->window, gc,j,y-sqrt(pnt1_y),j+1,y-sqrt(pnt2_y));
 	  gdk_draw_line(l2->window, gc,j,y+sqrt(pnt1_y),j+1,y+sqrt(pnt2_y));
 	}
-	
     }
-}
-
+} 
