@@ -10,7 +10,7 @@ GtkWidget *l2; // 描画ウィジェット
 const int draw_span = DROP_SPAN + WAVE_SPAN; // 1つの雫/波 描画時間(ms)
 const int MAX_RGB = 65535; // RGBの最大値
 char buf[256] = "";
-char *buf2 = NULL;
+char *weather = NULL;
 int reverse=0;
 
 int main(int argc, char **argv)
@@ -87,10 +87,20 @@ int main(int argc, char **argv)
   return 0;
 }
 
+/* 最期に入る改行を取り除く関数 */  
+void lntrim(char *str) {  
+  char *p;  
+  p = strchr(str, '\n');  
+  if(p != NULL) {  
+    *p = '\0';  
+  }  
+} 
+
 // タイムアウトコールバック
 gboolean timeout_callback()
 {
   int i;
+  char* cbuf;
   static int start_time[48][2]; // 各波(雫&波)の描画開始時間
   static int cur_start_idx=0, cur_end_idx=0; // 現在の描画インデックス(開始/終了用)
   static int centerX[48], centerY[48]; // 中心座標群
@@ -98,25 +108,37 @@ gboolean timeout_callback()
   if (timer == 1)
     {
       int buf_size_max = 1024;
-      buf2 = (char *)malloc(sizeof(char) * buf_size_max);
-      GetTomorrowWhether(buf, &buf2);
+      weather = (char *)malloc(sizeof(char) * buf_size_max);
+      GetTomorrowWhether(buf, &weather);
 
-      // 天気ラベル設定 TODO:実際にウェブから取得
+      // 不要な最後の改行を削除
+      cbuf = strchr(weather, '\n');
+      if (cbuf != NULL) *cbuf = '\0';
+      
+      // 天気ラベル設定
       gtk_label_set_text(GTK_LABEL(wl1), "長崎市の明日の天気");
-      switch(atoi(buf2))
-	{
-	case 0:
-	  gtk_label_set_text(GTK_LABEL(wl2), "晴れ");
-	  break;
-	case 1:
-	  gtk_label_set_text(GTK_LABEL(wl2), "雨");
-	  break;
-	default:
-	  gtk_label_set_text(GTK_LABEL(wl2), "定義なし");
-	  break;
-	}
+      gtk_label_set_text(GTK_LABEL(wl2), weather); 
 
-      free(buf2);
+      /* switch(atoi(weather)) */
+      /* 	{ */
+      /* 	case 1: */
+      /* 	  gtk_label_set_text(GTK_LABEL(wl2), "晴れ"); */
+      /* 	  break; */
+      /* 	case 2: */
+      /* 	  gtk_label_set_text(GTK_LABEL(wl2), "曇り"); */
+      /* 	  break; */
+      /* 	case 3: */
+      /* 	  gtk_label_set_text(GTK_LABEL(wl2), "雨"); */
+      /* 	  break; */
+      /* 	case 4: */
+      /* 	  gtk_label_set_text(GTK_LABEL(wl2), "曇り"); */
+      /* 	  break; */
+      /* 	default: */
+      /* 	  gtk_label_set_text(GTK_LABEL(wl2), "定義なし"); */
+      /* 	  break; */
+      /* 	} */
+
+      free(weather);
     }
 
   // 新しい雫の着地点(波の中心)座標を設定する
