@@ -22,15 +22,15 @@ extern const int MAX_RGB; // RGBの最大値
 
 // Kawakami ChangeByWhether.c
 // 天気
-extern char* GetTomorrowWhether(char* location);
-extern int ConvertWhetherToWaitSpan(char* whether);
+extern void GetTomorrowWhether(char* location, char **wheather);
+extern int ConvertWhetherToWaitSpan(char* wheather);
 // 波の色替え関数
 extern void GetRandomColorGC(GdkGC **gc);
 extern int CalcNextParam(int color_ratio, int ini_param);
 extern void GetRandomColorByTimer(GdkColor* color);
 
 // Kondo Reverse.c
-extern int reverse; // 0=円形, 1=三角, 2=四角
+extern int reverse;
 extern void DrawDropAndCircles(int x,int y,int lim,GdkGC* gc);
 extern void DrawReverseCircles(int x,int y,int lim,GdkGC* gc);
 

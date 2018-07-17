@@ -1,15 +1,74 @@
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "win.h"
 
-// ある地域の明日の天気を取得する
-char* GetTomorrowWhether(char* location)
-{
-  // ...
+static const int BUF_SIZE = 1024;
+static const int READ = 0;
+static const int WRITE = 1;
 
-  return NULL; 
+// ある地域の明日の天気を取得する
+void GetTomorrowWhether(char* location, char **wheather)
+{
+  int pipefd[2];
+  int p_id;
+  int status;
+  FILE *fp;
+  char buff[BUF_SIZE];
+
+  if (pipe(pipefd) < 0) // パイプ生成
+    {
+      perror("GetTomorrwowWhether内");
+      exit(EXIT_FAILURE);
+    }
+  if ((p_id = fork()) < 0) // 子プロセスの生成
+    {
+      perror("GetTomorrwowWhether内");
+
+      //パイプを閉じて終了
+      close(pipefd[READ]);
+      close(pipefd[WRITE]);
+      exit(EXIT_FAILURE);
+    }
+
+  // 子から親へ天気情報を送る
+  if (p_id == 0) // 子プロセス
+    {
+      close(pipefd[READ]); // 子は読み込まないので閉じる
+
+      // ファイル記述子を標準出力に割り当て
+      dup2(pipefd[WRITE], 1);
+      close(pipefd[WRITE]);
+
+      // pythonファイルを実行しデータを書き込む
+      if (execl("./getweather.py", "./getweather.py", (char *)0) < 0)
+	{
+	  perror("popen2");
+	  return;
+	}	
+
+      close(pipefd[WRITE]);
+    }
+  else // 親プロセス
+    {
+      close(pipefd[WRITE]); // 親は書き込まないので閉じる
+
+      read(pipefd[READ], buff, BUF_SIZE);
+      strcpy(*wheather,buff);    
+
+      close(pipefd[READ]);
+
+      // 子プロセス終了
+      //kill(p_id, SIGINT);
+      wait(&status);
+    }
 }
 
 // 次の雫が落ちるまでの時間間隔を取得
-int ConvertWhetherToWaitSpan(char* whether)
+int ConvertWhetherToWaitSpan(char* wheather)
 {
   // ...
 
