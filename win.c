@@ -87,15 +87,6 @@ int main(int argc, char **argv)
   return 0;
 }
 
-/* 最期に入る改行を取り除く関数 */  
-void lntrim(char *str) {  
-  char *p;  
-  p = strchr(str, '\n');  
-  if(p != NULL) {  
-    *p = '\0';  
-  }  
-} 
-
 // タイムアウトコールバック
 gboolean timeout_callback()
 {
