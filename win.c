@@ -13,6 +13,7 @@ const int MAX_RGB = 65535; // RGBの最大値
 char buf[256] = "";
 char *weather = NULL;
 int reverse=0;
+static int reverseTime;
 
 int main(int argc, char **argv)
 {
@@ -147,11 +148,11 @@ gboolean timeout_callback()
 	cur_start_idx = 0;
     }
 
-  //水滴が落ちるごとに背景色を更新
-  if (/*reverse%2 == 0 && */timer%val==DROP_SPAN) // 非Reverse時
-    GetBGColorGC(&bggc);
-  //else if (reverse%2 == 1 && timer%draw_span==WAVE_SPAN-1) // Reverse時
-  //  GetBGColorGC(&bggc);
+  /* //水滴が落ちるごとに背景色を更新 */
+  /* if (reverse%2 == 0 && timer%val==DROP_SPAN) // 非Reverse時 */
+  /*   GetBGColorGC(&bggc); */
+  /* else if (reverse%2 == 1 && timer%val==val-DROP_SPAN) // Reverse時 */
+  /*  GetBGColorGC(&bggc); */
 
   // 色取得
   static GdkGC* gc = NULL;
@@ -161,9 +162,17 @@ gboolean timeout_callback()
   for(i = 0; i < draw_span; i++)
     {
       if(start_time[i][1]%2==0)
-      	{DrawDropAndCircles(centerX[i],centerY[i],start_time[i][0],gc);}
+      	{
+	  DrawDropAndCircles(centerX[i],centerY[i],start_time[i][0],gc);
+	  if (timer-start_time[i][0] == DROP_SPAN)
+	    GetBGColorGC(&bggc);
+	}
       if(start_time[i][1]%2==1)
-      	{DrawReverseCircles(centerX[i],centerY[i],start_time[i][0],gc);}
+      	{
+	  DrawReverseCircles(centerX[i],centerY[i],start_time[i][0],gc);
+	  if (timer-start_time[i][0] == WAVE_SPAN)
+	    GetBGColorGC(&bggc);
+	}
     }
 
   // 描画開始から時間の経った波をクリア
@@ -200,5 +209,6 @@ void value_update_callback(GtkSpinButton *s)
 void reverse_clicked_callback()
 {
   reverse++;
+  reverseTime = timer;
 }
 
