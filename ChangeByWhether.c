@@ -10,6 +10,10 @@ static const int BUF_SIZE = 1024;
 static const int READ = 0;
 static const int WRITE = 1;
 
+static const int SUNNY = 30;
+static const int CLOUDY = 20;
+static const int RAINY = 2;
+
 // ある地域の明日の天気を取得する
 void GetTomorrowWeather(char* location, char **weather)
 {
@@ -57,27 +61,88 @@ void GetTomorrowWeather(char* location, char **weather)
       close(pipefd[WRITE]); // 親は書き込まないので閉じる
 
       read(pipefd[READ], buff, BUF_SIZE);
-      strcpy(*weather,buff);    
+      strcpy(*weather,buff);
 
       close(pipefd[READ]);
 
       // 子プロセス終了
-      //kill(p_id, SIGINT);
       wait(&status);
     }
 }
 
 // 次の雫が落ちるまでの時間間隔を取得
+// 値は
 int ConvertWeatherToWaitSpan(char* weather)
 {
+  // 単一の場合
   if (!strcmp(weather, "晴れ"))
-    return 30;
+    return SUNNY;
   else if (!strcmp(weather, "雨"))
-    return 2;
+    return RAINY;
   else if (!strcmp(weather, "曇り"))
-    return 20;
+    return CLOUDY;
   else
-    return 1; // とりあえず
+    {
+      char *findNochi, *findToki;
+      char *findSunny, *findCloudy, *findRainy;
+
+      // NOTE: NULL(Cでは0)を利用して考える 実際にはstrstrの返値はアドレス
+      findNochi = strstr(weather, "のち");
+      findToki = strstr(weather, "時々");
+      findSunny = strstr(weather, "晴");
+      findCloudy = strstr(weather, "曇");
+      findRainy = strstr(weather, "雨");
+
+      // 'のち'複合
+      // 先後関係なし
+      if (findNochi)
+	{
+	  if (findSunny && findCloudy)
+	    return (SUNNY + CLOUDY) / 2;
+	  if (findCloudy && findRainy)
+	    return (CLOUDY + RAINY) / 2;
+	  if (findSunny && findRainy)
+	    return (SUNNY + RAINY) / 2;
+	}
+      // '時々'複合
+      // 順番関係あり 4:1のウェイト
+      else if (findToki)
+	{
+	  int first = 0, second = 0;
+
+	  // 晴時々曇 or 晴時々雨
+	  if (findSunny-weather == 0)
+	    {
+	      first = SUNNY * 4;
+	      if (findCloudy) second = CLOUDY;
+	      if (findRainy) second = RAINY;
+	    }
+	  // ...
+	  else if (findCloudy-weather == 0)
+	    {
+	      first = CLOUDY * 4;
+	      if (findSunny) second = SUNNY;
+	      if (findRainy) second = RAINY;
+	    }
+	  else if (findRainy-weather == 0)
+	    {
+	      first = RAINY * 4;
+	      if (findSunny) second = SUNNY;
+	      if (findCloudy) second = CLOUDY;
+	    }
+
+	  if (first*second == 0)
+	    {
+	      perror("ConvertWeatherToSpan");
+	      return 1; // おかしいとき
+	    }
+      
+	  return (first + second) / 5;
+	}
+    }
+
+  // それ以外
+  return 1; // とりあえず異常気象っぽいのでちらつく激しさで
 }
 
 // タイマーの値からランダム色を生成

@@ -1,5 +1,6 @@
 // チーム８
 #include "win.h"
+#include <string.h>
 
 int wnd_height = 200; // ウィンドウの高さ
 int wnd_width = 400; // ウィンドウの幅
@@ -28,8 +29,8 @@ int main(int argc, char **argv)
   g_signal_connect(win,"destroy",G_CALLBACK(gtk_main_quit),NULL);
 
   // 天気ウィジェット設定
-  wl1 = gtk_label_new("Label1");
-  wl2 = gtk_label_new("Label2");
+  wl1 = gtk_label_new("天気情報取得中...");
+  wl2 = gtk_label_new("");
 
   /* make a draw area */
   l2 = gtk_drawing_area_new();
@@ -94,6 +95,12 @@ gboolean timeout_callback()
   char* cbuf;
   static int start_time[48][2]; // 各波(雫&波)の描画開始時間
   static int cur_start_idx=0, cur_end_idx=0; // 現在の描画インデックス(開始/終了用)
+
+  static GdkGC* bggc = NULL; //背景色のグラフィックコンテクスト
+  //背景色の初期値取得
+  if(timer == 0)
+      GetBGColorGC(&bggc);
+
   static int centerX[48], centerY[48]; // 中心座標群
 
   if (timer == 1)
@@ -113,27 +120,9 @@ gboolean timeout_callback()
       // 天気から時間間隔を決定
       val = ConvertWeatherToWaitSpan(weather);
 
-      /* switch(atoi(weather)) */
-      /* 	{ */
-      /* 	case 1: */
-      /* 	  gtk_label_set_text(GTK_LABEL(wl2), "晴れ"); */
-      /* 	  break; */
-      /* 	case 2: */
-      /* 	  gtk_label_set_text(GTK_LABEL(wl2), "曇り"); */
-      /* 	  break; */
-      /* 	case 3: */
-      /* 	  gtk_label_set_text(GTK_LABEL(wl2), "雨"); */
-      /* 	  break; */
-      /* 	case 4: */
-      /* 	  gtk_label_set_text(GTK_LABEL(wl2), "曇り"); */
-      /* 	  break; */
-      /* 	default: */
-      /* 	  gtk_label_set_text(GTK_LABEL(wl2), "定義なし"); */
-      /* 	  break; */
-      /* 	} */
-
       free(weather);
     }
+
 
   // 新しい雫の着地点(波の中心)座標を設定する
   if(timer%val == 0)
@@ -142,13 +131,13 @@ gboolean timeout_callback()
       centerX[cur_start_idx] = rand() % wnd_width;
       centerY[cur_start_idx] = rand() % wnd_height;
     }
-
-  // 描画エリアを背景色でクリア(背景色:黒)
+ 
+  // 描画エリアを背景色でクリア(背景色:bggc)
   gdk_draw_rectangle(l2->window,
-  		     l2->style->fg_gc[GTK_WIDGET_STATE(l2)],
+  		     bggc,
   		     TRUE,
   		     0, 0, wnd_width, wnd_height);
- 
+
   // 新しい波を追加する
   if(timer%val==0 && start_time[cur_start_idx][0]==0)
     {
@@ -157,6 +146,12 @@ gboolean timeout_callback()
       if(++cur_start_idx == draw_span) 
 	cur_start_idx = 0;
     }
+
+  //水滴が落ちるごとに背景色を更新
+  if (/*reverse%2 == 0 && */timer%val==DROP_SPAN) // 非Reverse時
+    GetBGColorGC(&bggc);
+  //else if (reverse%2 == 1 && timer%draw_span==WAVE_SPAN-1) // Reverse時
+  //  GetBGColorGC(&bggc);
 
   // 色取得
   static GdkGC* gc = NULL;
@@ -168,11 +163,11 @@ gboolean timeout_callback()
       if(start_time[i][1]%2==0)
       	{DrawDropAndCircles(centerX[i],centerY[i],start_time[i][0],gc);}
       if(start_time[i][1]%2==1)
-	{DrawReverseCircles(centerX[i],centerY[i],start_time[i][0],gc);}
+      	{DrawReverseCircles(centerX[i],centerY[i],start_time[i][0],gc);}
     }
-  
+
   // 描画開始から時間の経った波をクリア
-  if(start_time[cur_end_idx][0]+draw_span == timer)
+  if(start_time[cur_end_idx][0]+draw_span-1 == timer)
     { 
       start_time[cur_end_idx][0] = 0;
       if(++cur_end_idx == draw_span)

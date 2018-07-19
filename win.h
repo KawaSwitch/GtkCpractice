@@ -38,3 +38,4 @@ extern void DrawReverseCircles(int x,int y,int lim,GdkGC* gc);
 extern void GetBGColor(GdkColor* color);
 extern void GetBGColorGC(GdkGC **gc);
 extern void ChangeBGColor(GdkGC **gc);
+extern int CalcNextParamBG(int color_ratio, int ini_param);

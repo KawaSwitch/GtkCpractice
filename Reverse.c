@@ -31,7 +31,7 @@ void DrawDropAndCircles(int x,int y,int start,GdkGC* gc)
 
 	      // 第1波
 	      r1 = 40 - pow((timer-start-DROP_SPAN)-40,2)/(double)40;
-	      if(j<=x+r1-1&&j>=x-r1&&timer<48+start)
+	      if(j<=x+r1-1&&j>=x-r1&&timer<40+start)
 		{
 		  pnt1_y = pow(r1,2)-pow(j-x,2);
 		  pnt2_y = pow(r1,2)-pow(j-x+1,2);
@@ -41,7 +41,7 @@ void DrawDropAndCircles(int x,int y,int start,GdkGC* gc)
 
 	      // 第2波(第1波より遅くずらす)
 	      r2 = 40 - pow((timer-start-DROP_SPAN-shift_span)-40,2)/(double)40;
-	      if(j<=x+r2-1 && j>=x-r2 && timer>20+start)
+	      if(j<=x+r2-1 && j>=x-r2 && timer>13+start)
 		{
 		  pnt1_y = pow(r2,2)-pow(j-x,2);
 		  pnt2_y = pow(r2,2)-pow(j-x+1,2);
