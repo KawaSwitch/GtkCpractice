@@ -13,4 +13,4 @@ back: Background.c
 	gcc -c -o back.o Background.c `pkg-config --cflags --libs gtk+-2.0`
 
 win: win.c cbw.o reverse.o back.o
-	gcc -g -Wall -o win win.c cbw.o reverse.o back.o -lm `pkg-config --cflags --libs gtk+-2.0`
+	gcc -g -Wall -o win win.c cbw.o reverse.o back.o -lm -O3 `pkg-config --cflags --libs gtk+-2.0`
